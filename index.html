@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmers Fruits</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .tagline {
+            font-size: 1.2em;
+        }
+
+        .products {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .product-card {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .quantity {
+            width: 50px;
+            margin-right: 10px;
+        }
+
+        .cart, .user-info {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #cart-items {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Farmers Fruits</h1>
+        <p class="tagline">Fresh Fruits From Farm</p>
+    </header>
+    <main>
+        <section class="products">
+            <h2>Our Products</h2>
+            <!-- Product Cards -->
+            <div class="product-card">
+                <img src="apple.jpg" alt="Apple">
+                <h3>Apple</h3>
+                <p>$1.99 per kg</p>
+                <label for="apple-quantity">Quantity:</label>
+                <input type="number" id="apple-quantity" min="1" value="1" class="quantity">
+                <button>Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="banana.jpg" alt="Banana">
+                <h3>Banana</h3>
+                <p>$0.99 per kg</p>
+                <label for="banana-quantity">Quantity:</label>
+                <input type="number" id="banana-quantity" min="1" value="1" class="quantity">
+                <button>Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="orange.jpg" alt="Orange">
+                <h3>Orange</h3>
+                <p>$2.49 per kg</p>
+                <label for="orange-quantity">Quantity:</label>
+                <input type="number" id="orange-quantity" min="1" value="1" class="quantity">
+                <button>Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="grape.jpg" alt="Grape">
+                <h3>Grape</h3>
+                <p>$3.99 per kg</p>
+                <label for="grape-quantity">Quantity:</label>
+                <input type="number" id="grape-quantity" min="1" value="1" class="quantity">
+                <button>Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="strawberry.jpg" alt="Strawberry">
+                <h3>Strawberry</h3>
+                <p>$4.99 per kg</p>
+                <label for="strawberry-quantity">Quantity:</label>
+                <input type="number" id="strawberry-quantity" min="1" value="1" class="quantity">
+                <button>Add to Cart</button>
+            </div>
+            <div class="product-card">
+                <img src="mango.jpg" alt="Mango">
+                <h3>Mango</h3>
+                <p>$5.99 per kg</p>
+                <label for="mango-quantity">Quantity:</label>
+                <input type="number" id="mango-quantity" min="1" value="1" class="quantity">
+                <button>Add to Cart</button>
+            </div>
+        </section>
+        <section class="cart">
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+            <p>Total Price: <span id="total-price">$0.00</span></p>
+            <p>Discount: <span id="discount">$0.00</span></p>
+            <p>Final Price: <span id="final-price">$0.00</span></p>
+        </section>
+        <section class="user-info">
+            <h2>User Information</h2>
+            <form id="order-form">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" required>
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+                <button type="submit">Place Order</button>
+            </form>
+        </section>
+    </main>
+    <script>
+        document.querySelectorAll('.product-card button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                const productCard = event.target.closest('.product-card');
+                const quantityInput = productCard.querySelector('.quantity');
+                const quantity = parseInt(quantityInput.value);
+                const price = parseFloat(productCard.querySelector('p').textContent.replace('$', ''));
+                const totalPrice = quantity * price;
+
+                // Add item to cart
+                const cartItem = document.createElement('div');
+                cartItem.textContent = `${productCard.querySelector('h3').textContent} x${quantity} - $${totalPrice.toFixed(2)}`;
+                document.getElementById('cart-items').appendChild(cartItem);
+
+                // Update cart total, discount, and final price
+                updateCartTotals(totalPrice);
+            });
+        });
+
+        function updateCartTotals(totalPrice) {
+            let cartItems = document.querySelectorAll('#cart-items div');
+            let total = 0;
+            cartItems.forEach(item => {
+                let price = parseFloat(item.textContent.match(/\$([\d.]+)/)[1]);
+                total += price;
+            });
+
+            let discount = total > 20 ? total * 0.20 : 0;
+            let finalPrice = total - discount;
+
+            document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('discount').textContent = `$${discount.toFixed(2)}`;
+            document.getElementById('final-price').textContent = `$${finalPrice.toFixed(2)}`;
+        }
+
+        document.getElementById('order-form').addEventListener('submit', (event) => {
+            event.preventDefault();
+            alert('Thank you for purchasing. You will receive your items in 3 hours.');
+            // Display bill or redirect to a confirmation page
+        });
+    </script>
+</body>
+</html>
